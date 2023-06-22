@@ -63,7 +63,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServicesTest", "Tests\Integ
 		{78D13C42-B7EC-4711-A630-164BED525DDA} = {78D13C42-B7EC-4711-A630-164BED525DDA}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestData", "Tests\TestData\TestData.csproj", "{0F7EF295-09F0-448A-8C4F-065F5F26B80C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestData", "Tests\TestData\TestData.csproj", "{0F7EF295-09F0-448A-8C4F-065F5F26B80C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Prototype", "Prototype", "{19492EED-BB06-43F1-AA16-7CEF638486C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
