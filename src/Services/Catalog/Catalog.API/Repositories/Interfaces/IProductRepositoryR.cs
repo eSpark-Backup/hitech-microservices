@@ -7,6 +7,7 @@ namespace Catalog.API.Repositories.Interfaces
     public interface IProductRepositoryR
     {
         Task<IEnumerable<CategorySubWithCountDto>> GetProducts();
+        Task<ProductsFilterMeta> GetProductsFilterMeta();
         Task<Category> GetProductById(string id);
         Task<FilterResult> GetFilteredProducts(PaginationFilter pagefilter, FilterSortDto myfilter);
         Task<IEnumerable<Category>> GetProductsByMFP(string mfp, string mf);

@@ -16,5 +16,12 @@
         public string SubCategoryName { get; set; }
         public int ProductCount { get; set; }
     }
+    public class ProductsFilterMeta
+    {
+        public bool Instock { get; set; }
+        public bool NewlyAdded { get; set; }
+        public Dictionary<string, int> Manufacturers { get; set; }
+        public bool IsCADAvailable { get; set; }
+    }
 
 }

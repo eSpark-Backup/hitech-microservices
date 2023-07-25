@@ -4,5 +4,6 @@
     {
         public string SubCategoryName { get; set; }
         public Product Product { get; set; }
+        public string? SubCategoryImageUrl { get; set; }
     }
 }

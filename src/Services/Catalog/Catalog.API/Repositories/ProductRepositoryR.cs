@@ -15,6 +15,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using Amazon.Runtime.Internal.Transform;
 using MassTransit.Internals;
 using System.Linq;
+using static OpenIddict.Validation.OpenIddictValidationHandlers;
 
 namespace Catalog.API.Repositories
 {
@@ -25,8 +26,28 @@ namespace Catalog.API.Repositories
         {
             _context = context;
         }
+        public async Task<ProductsFilterMeta> GetProductsFilterMeta()
+        {
+            // exclude id, return only gender and date of birth
+            var projection = Builders<Category>.Projection
+                .Exclude(e => e.Id)
+                .Include(u => u.SubCategory.Product.Manufacturer)
+                ;
+
+            var filter = new BsonDocument();
+
+            // Get results
+            var projectedData =
+                await _context.CategoryList
+                .Aggregate()
+                .Find(filter)
+                .Project(projection) // projection stage
+                .ToListAsync()
+                ; return null;
+        }
         public async Task<IEnumerable<CategorySubWithCountDto>> GetProducts()
         {
+            var aa = await GetProductsFilterMeta();
             var pp = await _context.CategoryList
                 .Aggregate()
                 .Group(
@@ -44,7 +65,7 @@ namespace Catalog.API.Repositories
                 CategoryName = key,
                 SubCategories = group.Select(a => new SubCategoryDto { SubCategoryName = a.SubCategoryName, ProductCount = a.ProductsCount }).ToList(),
             })
-                .OrderBy(a=>a.CategoryName)
+                .OrderBy(a => a.CategoryName)
                 .ToList();
         }
         public async Task<Category> GetProductById(string _id)
