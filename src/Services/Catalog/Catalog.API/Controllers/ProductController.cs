@@ -26,11 +26,10 @@ namespace Catalog.API.Controllers
         /// <summary>
         /// Returns All Category, Subcategory and SucCategory Counts
         /// </summary>
-        /// <param name="orderby"></param>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<CategoryWithCount>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<IEnumerable<CategoryWithCount>>> Products()
+        [ProducesResponseType(typeof(IEnumerable<CategorySubWithCountDto>), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<IEnumerable<CategorySubWithCountDto>>> Products()
         {
             var products = await _repository.GetProducts();
 

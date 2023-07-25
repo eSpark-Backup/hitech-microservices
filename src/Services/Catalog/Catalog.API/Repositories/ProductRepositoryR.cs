@@ -25,20 +25,27 @@ namespace Catalog.API.Repositories
         {
             _context = context;
         }
-        public async Task<IEnumerable<CategoryWithCount>> GetProducts()
+        public async Task<IEnumerable<CategorySubWithCountDto>> GetProducts()
         {
-            return await _context
-                                 .CategoryList
-                                 .Aggregate()
-                                 .Group(
-                 a => new { a.CategoryName, a.SubCategory.SubCategoryName },
-                 b => new CategoryWithCount
-                 {
-                     CategoryName = b.Key.CategoryName,
-                     SubCategoryName = b.Key.SubCategoryName,
-                     SubCategoryCount = b.Count()
-                 })
-                                 .ToListAsync();
+            var pp = await _context.CategoryList
+                .Aggregate()
+                .Group(
+                a => new { a.CategoryName, a.SubCategory.SubCategoryName },
+                b => new CategoryWithCount
+                {
+                    CategoryName = b.Key.CategoryName,
+                    SubCategoryName = b.Key.SubCategoryName,
+                    ProductsCount = b.Count()
+                })
+                .ToListAsync();
+
+            return pp.GroupBy(p => p.CategoryName, (key, group) => new CategorySubWithCountDto
+            {
+                CategoryName = key,
+                SubCategories = group.Select(a => new SubCategoryDto { SubCategoryName = a.SubCategoryName, ProductCount = a.ProductsCount }).ToList(),
+            })
+                .OrderBy(a=>a.CategoryName)
+                .ToList();
         }
         public async Task<Category> GetProductById(string _id)
         {
@@ -118,7 +125,7 @@ namespace Catalog.API.Repositories
 
             foreach (var item in additionalFields)
                 filtersWithCount.Add(item.Key, item.GroupBy(a => a.Value).ToDictionary(a => a.Key, a => a.Count()));
-            
+
 
             return filtersWithCount;
         }
