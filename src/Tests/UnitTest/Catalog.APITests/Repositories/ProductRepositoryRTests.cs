@@ -23,7 +23,7 @@ namespace Catalog.API.Repositories.Tests
             var products = await sut.GetProducts();
 
             //assert
-            products.Should().HaveCount(4);
+            products.ProductsStats.Should().HaveCount(4);
         }
 
         //[Fact()]

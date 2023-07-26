@@ -28,8 +28,8 @@ namespace Catalog.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<CategorySubWithCountDto>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<IEnumerable<CategorySubWithCountDto>>> Products()
+        [ProducesResponseType(typeof(ProductsResponse), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<ProductsResponse>> Products()
         {
             var products = await _repository.GetProducts();
 

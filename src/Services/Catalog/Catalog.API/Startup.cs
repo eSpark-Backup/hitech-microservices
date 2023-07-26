@@ -107,8 +107,7 @@ namespace Catalog.API
             new DbContextSettings(
                 configRoot.GetValue<string>("DatabaseSettings:ConnectionString"),
                 configRoot.GetValue<string>("DatabaseSettings:DatabaseName"),
-                configRoot.GetValue<string>("DatabaseSettings:CollectionName"),
-                configRoot.GetValue<string>("DatabaseSettings:ECollectionName")
+                configRoot.GetValue<string>("DatabaseSettings:CollectionName")
                 ));
             // Add RabitMQ Configuration 
             // MassTransit-RabbitMQ Configuration

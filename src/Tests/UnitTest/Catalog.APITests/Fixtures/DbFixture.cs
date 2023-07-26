@@ -15,8 +15,7 @@ namespace Catalog.APITests.Fixtures
             DbContextSettings = new DbContextSettings(
                 config.GetValue<string>("DatabaseSettings:ConnectionString"),
                 config.GetValue<string>("DatabaseSettings:DatabaseName"),
-                config.GetValue<string>("DatabaseSettings:CollectionName"),
-                config.GetValue<string>("DatabaseSettings:ECollectionName")
+                config.GetValue<string>("DatabaseSettings:CollectionName")
                 );
             dropDatabase();
 

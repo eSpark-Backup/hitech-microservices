@@ -4,18 +4,12 @@ using Catalog.API.Entities.Dtos;
 using Catalog.API.Extensions;
 using Catalog.API.Filter;
 using Catalog.API.Repositories.Interfaces;
-using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
-using MongoDB.Driver;
-using System.Collections.Generic;
-using MongoDB.Bson.Serialization;
-using Newtonsoft.Json.Linq;
-using System.Reflection;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Amazon.Runtime.Internal.Transform;
 using MassTransit.Internals;
-using System.Linq;
-using static OpenIddict.Validation.OpenIddictValidationHandlers;
+using Microsoft.IdentityModel.Tokens;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
 
 namespace Catalog.API.Repositories
 {
@@ -26,28 +20,61 @@ namespace Catalog.API.Repositories
         {
             _context = context;
         }
-        public async Task<ProductsFilterMeta> GetProductsFilterMeta()
+        public async Task<ProductsFilter> GetProductsFilter()
         {
             // exclude id, return only gender and date of birth
             var projection = Builders<Category>.Projection
                 .Exclude(e => e.Id)
+                .Include(u => u.CategoryName)
                 .Include(u => u.SubCategory.Product.Manufacturer)
+                .Include(u => u.SubCategory.Product.InStock)
+                .Include(u => u.SubCategory.Product.LaunchDate)
+                .Include(u => u.SubCategory.Product.CADModelUrl)
                 ;
 
             var filter = new BsonDocument();
 
             // Get results
-            var projectedData =
-                await _context.CategoryList
-                .Aggregate()
+            var projectedData = await _context.CategoryList
                 .Find(filter)
                 .Project(projection) // projection stage
                 .ToListAsync()
-                ; return null;
+                ;
+
+            var categories = projectedData.Select(v => BsonSerializer.Deserialize<Category>(v)).ToList();
+            ProductsFilter pf = new();
+
+            pf.Manufacturer = categories
+                  .Select(a => a.SubCategory.Product.Manufacturer)
+                  .ToList()
+                  .GroupBy(ii => ii.ToString())
+                  .ToDictionary(group => group.Key, group => group.Count());
+            
+            var instock = categories
+                  .Select(a => a.SubCategory.Product.InStock)
+                  .Where(a => a == true)
+                  .Count();
+            pf.General.Add("Instock", instock);
+            
+            var NewlyAdded = categories
+                  .Select(a => a.SubCategory.Product.LaunchDate)
+                  .Where(a=>a>=DateTimeOffset.UtcNow.AddMonths(-1))
+                  .Count();
+            pf.General.Add("NewlyAdded", NewlyAdded);
+
+            var CADModelUrl = categories
+                  .Select(a => a.SubCategory.Product.CADModelUrl)
+                  .Where(a=>!a.IsNullOrEmpty())
+                  .Count();
+            pf.General.Add("CADAvailable", CADModelUrl);
+
+            pf.Categories = categories
+                .Select(a => a.CategoryName).Distinct()
+                .ToList();
+            return pf;
         }
-        public async Task<IEnumerable<CategorySubWithCountDto>> GetProducts()
+        public async Task<ProductsResponse> GetProducts()
         {
-            var aa = await GetProductsFilterMeta();
             var pp = await _context.CategoryList
                 .Aggregate()
                 .Group(
@@ -59,14 +86,20 @@ namespace Catalog.API.Repositories
                     ProductsCount = b.Count()
                 })
                 .ToListAsync();
-
-            return pp.GroupBy(p => p.CategoryName, (key, group) => new CategorySubWithCountDto
+            var cats = pp.GroupBy(p => p.CategoryName, (key, group) => new ProductStats
             {
                 CategoryName = key,
                 SubCategories = group.Select(a => new SubCategoryDto { SubCategoryName = a.SubCategoryName, ProductCount = a.ProductsCount }).ToList(),
             })
                 .OrderBy(a => a.CategoryName)
                 .ToList();
+
+            var filters = await GetProductsFilter();
+            return new ProductsResponse() 
+            {
+                ProductsStats = cats,
+                ProductFilter = filters,
+            };
         }
         public async Task<Category> GetProductById(string _id)
         {
