@@ -5,11 +5,32 @@ using Sylvan.Data;
 using Sylvan.Data.Csv;
 using System.Data;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace Catalog.API.Services
 {
     public class CSV2Category : ICSV2Category
     {
+        enum EColIndex
+        {
+            Category = 0,
+            CategoryImageUrl,
+            SubCategory,
+            SubCategoryImageUrl,
+            ManufacturerPartNo,
+            Manufacturer,
+            ItemName,
+            LaunchDate,
+            Description,
+            Stock,
+            Price,
+            Packaging,
+            Series,
+            CADModelUrl,
+            DatasheetUrl,
+            ImageUrls,
+            AdditionalFields
+        }
         public CSVDto Read(string path)
         {
             CSVDto cSVDto = new CSVDto();
@@ -31,29 +52,35 @@ namespace Catalog.API.Services
                         Category obj = new Category();
 
                         // Set the properties of the product object from the data in the CSV file
-                        obj.CategoryName = reader.GetString(0);
+                        obj.CategoryName = reader.GetString((int)EColIndex.Category);
+                        obj.CategoryImageUrl = reader.GetString((int)EColIndex.CategoryImageUrl);
 
-                        obj.SubCategory = new SubCategory();
+                        obj.SubCategory = new();
 
-                        obj.SubCategory.SubCategoryName = reader.GetString(1);
-                        obj.SubCategory.Product = new Product();
+                        obj.SubCategory.SubCategoryName = reader.GetString((int)EColIndex.SubCategory);
+                        obj.SubCategory.SubCategoryImageUrl = reader.GetString((int)EColIndex.SubCategoryImageUrl);
+                        obj.SubCategory.Product = new();
 
-                        obj.SubCategory.Product.ManufacturerPartNo = reader.GetString(2);
-                        obj.SubCategory.Product.Manufacturer = reader.GetString(3);
-                        obj.SubCategory.Product.Name = reader.GetString(4);
-                        obj.SubCategory.Product.ProductNameShortdesc = reader.GetString(5);
-                        int intValue = reader.GetInt32(6);
+                        obj.SubCategory.Product.ManufacturerPartNo = reader.GetString((int)EColIndex.ManufacturerPartNo);
+                        obj.SubCategory.Product.Manufacturer = reader.GetString((int)EColIndex.Manufacturer);
+                        if (DateTimeOffset.TryParse(reader.GetString((int)EColIndex.LaunchDate), null, DateTimeStyles.AssumeLocal, out DateTimeOffset parsedDate))
+                            obj.SubCategory.Product.LaunchDate = parsedDate;
+
+                        obj.SubCategory.Product.Name = reader.GetString((int)EColIndex.ItemName);
+                        obj.SubCategory.Product.ProductNameShortdesc = reader.GetString((int)EColIndex.Description);
+                        int intValue = reader.GetInt32((int)EColIndex.Stock);
                         // converting Int32 to Uint32                    
                         uint uintValue = unchecked((uint)intValue);
 
                         obj.SubCategory.Product.Quantity = uintValue;
-                        obj.SubCategory.Product.UnitPrice = reader.GetDecimal(7);
-                        obj.SubCategory.Product.Packaging = reader.GetString(8);
-                        obj.SubCategory.Product.Series = reader.GetString(9);
-                        obj.SubCategory.Product.DataSheetUrl = reader.GetString(10);
-                        obj.SubCategory.Product.ImageUrl = reader.GetString(11);
 
-                        string input = reader.GetString(12);
+                        obj.SubCategory.Product.UnitPrice = reader.GetDecimal((int)EColIndex.Price);
+                        obj.SubCategory.Product.Packaging = reader.GetString((int)EColIndex.Packaging);
+                        obj.SubCategory.Product.Series = reader.GetString((int)EColIndex.Series);
+                        obj.SubCategory.Product.DataSheetUrl = reader.GetString((int)EColIndex.DatasheetUrl);
+                        obj.SubCategory.Product.ImageUrl = reader.GetString((int)EColIndex.ImageUrls);
+
+                        string input = reader.GetString((int)EColIndex.AdditionalFields);
                         if (!input.IsNullOrEmpty())
                         {
                             // remove curly braces

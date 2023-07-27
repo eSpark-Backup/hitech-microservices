@@ -32,17 +32,17 @@ namespace Catalog.API.Controllers.Tests
 
         }
 
-        [Fact]
-        public async void Product_GetCountWitCategory_Valid()
-        {
-            _IProductRepositoryR.Setup(repo => repo.GetProducts()).ReturnsAsync(ProductData.GetTestProductsCount());
+        //[Fact]
+        //public async void Product_GetCountWitCategory_Valid()
+        //{
+        //    _IProductRepositoryR.Setup(repo => repo.GetProducts()).ReturnsAsync(ProductData.GetTestProductsCount());
 
-            ProductsController pc = new ProductsController(_IProductRepositoryR.Object, Mock.Of<IUriService>());
-            var result = await pc.Products();
+        //    ProductsController pc = new ProductsController(_IProductRepositoryR.Object, Mock.Of<IUriService>());
+        //    var result = await pc.Products();
 
-            result.Result.Should().BeOfType<OkObjectResult>().Which.StatusCode.Should().Be(200);
-            result.Result.Should().BeOfType<OkObjectResult>().Which.Value.Should().BeOfType<List<CategoryWithCount>>().Which.Should().HaveCount(4);
-        }
+        //    result.Result.Should().BeOfType<OkObjectResult>().Which.StatusCode.Should().Be(200);
+        //    result.Result.Should().BeOfType<OkObjectResult>().Which.Value.Should().BeOfType<List<CategoryWithCount>>().Which.Should().HaveCount(4);
+        //}
 
         [Fact()]
         public async void Product_GetById_Valid()

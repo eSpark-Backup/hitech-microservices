@@ -30,10 +30,10 @@ namespace TestData
             // genertate test data list of CategoryWithCount
             var products = new List<CategoryWithCount>
             {
-                new CategoryWithCount {CategoryName="category1", SubCategoryName="subcategory1", SubCategoryCount=1},
-                new CategoryWithCount {CategoryName="category2", SubCategoryName="subcategory2", SubCategoryCount=2},
-                new CategoryWithCount {CategoryName="category3", SubCategoryName="subcategory3", SubCategoryCount=3},
-                new CategoryWithCount {CategoryName="category4", SubCategoryName="subcategory4", SubCategoryCount=4},
+                new CategoryWithCount {CategoryName="category1", SubCategoryName="subcategory1", ProductsCount=1},
+                new CategoryWithCount {CategoryName="category2", SubCategoryName="subcategory2", ProductsCount=2},
+                new CategoryWithCount {CategoryName="category3", SubCategoryName="subcategory3", ProductsCount=3},
+                new CategoryWithCount {CategoryName="category4", SubCategoryName="subcategory4", ProductsCount=4},
             };
             return products;
         }

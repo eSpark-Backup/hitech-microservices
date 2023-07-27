@@ -8,11 +8,11 @@ namespace Catalog.API.Data
     {
         public static async void SeedData(IMongoCollection<Category> productCollection)
         {
-            //if (productCollection.Find(p => true).Count() != GetPreconfiguredProducts().Count())
+            //if (productCollection.Find(p => true).Count() == 0)
             //{
             var filter = new BsonDocument();
-            await productCollection.DeleteManyAsync(filter);
-            await productCollection.InsertManyAsync(GetPreconfiguredProducts());
+            //await productCollection.DeleteManyAsync(filter);
+            //await productCollection.InsertManyAsync(GetPreconfiguredProducts());
             //}
         }
         public static IEnumerable<Category> GetPreconfiguredProducts()
@@ -34,12 +34,13 @@ namespace Catalog.API.Data
                                     { "Color", "Red" } ,
                                     {"Mounting", "Surface Mount" }
                                 },
+                                LaunchDate= DateTimeOffset.UtcNow.AddDays(-1),
                                 Manufacturer= "ABC",
                                 ManufacturerPartNo = "1n4001",
                                 Packaging = "Per Piece",
                                 UnitPrice = 200,
                                 Series = "Automotive",
-                                Quantity = 9
+                                Quantity = 0
                             }
                         }
                 },
@@ -59,6 +60,7 @@ namespace Catalog.API.Data
                                     {"Mounting", "Surface Mount" }
                                 },
                                 Manufacturer= "ABC",
+                                LaunchDate= DateTimeOffset.UtcNow.AddDays(-50),
                                 ManufacturerPartNo = "1n4001",
                                 Packaging = "Per Piece",
                                 UnitPrice = 200,
@@ -173,13 +175,15 @@ namespace Catalog.API.Data
                          Product = new Product()
                          {
                              Name = "Hinge",
+                             LaunchDate = DateTimeOffset.UtcNow,
                              AdditionalFields= new Dictionary<string, string>() { { "Color", "Red" } },
                              Manufacturer= "ABghC",
                              ManufacturerPartNo = "fgdf4",
                              Packaging = "Per Piece",
                              UnitPrice = 2030,
                              Series = "Automotive",
-                             Quantity = 9
+                             Quantity = 9,
+                             CADModelUrl = "sds"
                          },
                      }
                  },
@@ -192,6 +196,7 @@ namespace Catalog.API.Data
                         Product = new Product()
                         {
                             Name = "Drill Bit",
+                            LaunchDate = DateTimeOffset.UtcNow,
                             AdditionalFields = new Dictionary<string, string>() { { "Body", "Solid" } },
                             Manufacturer = "ABC",
                             ManufacturerPartNo = "tn4fgf001",
