@@ -8,16 +8,16 @@ namespace Catalog.API.Data
     {
         public static async void SeedData(IMongoCollection<Category> productCollection)
         {
-            //if (productCollection.Find(p => true).Count() == 0)
-            //{
-            var filter = new BsonDocument();
-            //await productCollection.DeleteManyAsync(filter);
-            //await productCollection.InsertManyAsync(GetPreconfiguredProducts());
-            //}
-        }
-        public static IEnumerable<Category> GetPreconfiguredProducts()
-        {
-            return new List<Category>()
+            if (!productCollection.Find(p => true).Any())
+            {
+                var filter = new BsonDocument();
+                //await productCollection.DeleteManyAsync(filter);
+                await productCollection.InsertManyAsync(GetPreconfiguredProducts());
+            }
+    }
+    public static IEnumerable<Category> GetPreconfiguredProducts()
+    {
+        return new List<Category>()
             {
                 new Category()
                 {
@@ -227,6 +227,6 @@ namespace Catalog.API.Data
                     }
                 }
             };
-        }
     }
+}
 }
