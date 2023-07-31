@@ -17,6 +17,7 @@ namespace Catalog.API
 {
     public class Startup
     {
+
         public IConfiguration configRoot
         {
             get;
@@ -28,6 +29,20 @@ namespace Catalog.API
         }
         public void ConfigureServices(IServiceCollection services)
         {
+            var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  builder =>
+                                  {
+                                      builder
+                                      .AllowAnyOrigin()
+                                      .AllowAnyMethod()
+                                      .AllowAnyHeader();
+                                  });
+            });
+
             // Add services to the container.
             services.AddControllers().AddNewtonsoftJson();
             // For username 
@@ -156,6 +171,7 @@ namespace Catalog.API
         }
         public void Configure(WebApplication app, IWebHostEnvironment env)
         {
+            app.UseCors("MyCorsPolicy");
             if (app.Environment.IsDevelopment()| app.Environment.IsEnvironment("local"))
             {
                 app.UseSwagger();
