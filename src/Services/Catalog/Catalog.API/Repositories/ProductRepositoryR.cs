@@ -20,7 +20,7 @@ namespace Catalog.API.Repositories
         {
             _context = context;
         }
-        public async Task<ProductsFilter> GetProductsFilter()
+        public async Task<ProductsFilterMeta> GetProductsFilter()
         {
             // exclude id, return only gender and date of birth
             var projection = Builders<Category>.Projection
@@ -42,7 +42,7 @@ namespace Catalog.API.Repositories
                 ;
 
             var categories = projectedData.Select(v => BsonSerializer.Deserialize<Category>(v)).ToList();
-            ProductsFilter pf = new();
+            ProductsFilterMeta pf = new();
 
             pf.Manufacturer = categories
                   .Select(a => a.SubCategory.Product.Manufacturer)
@@ -73,7 +73,7 @@ namespace Catalog.API.Repositories
                 .ToList();
             return pf;
         }
-        public async Task<ProductsResponse> GetProducts()
+        public async Task<ProductsResponse> GetProducts(IEnumerable<FilterDto>? filters)
         {
             var pp = await _context.CategoryList
                 .Aggregate()
@@ -94,11 +94,11 @@ namespace Catalog.API.Repositories
                 .OrderBy(a => a.CategoryName)
                 .ToList();
 
-            var filters = await GetProductsFilter();
+            var filtersMeta = await GetProductsFilter();
             return new ProductsResponse() 
             {
                 ProductsStats = cats,
-                ProductFilter = filters,
+                ProductFilter = filtersMeta,
             };
         }
         public async Task<Category> GetProductById(string _id)

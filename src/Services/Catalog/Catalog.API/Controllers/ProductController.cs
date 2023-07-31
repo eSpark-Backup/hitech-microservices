@@ -27,11 +27,11 @@ namespace Catalog.API.Controllers
         /// Returns All Category, Subcategory and SucCategory Counts
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         [ProducesResponseType(typeof(ProductsResponse), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<ProductsResponse>> Products()
-        {
-            var products = await _repository.GetProducts();
+        public async Task<ActionResult<ProductsResponse>> Products([FromBody]IEnumerable<FilterDto>? filters)
+        {           
+            var products = await _repository.GetProducts(filters);
 
             return Ok(products);
         }

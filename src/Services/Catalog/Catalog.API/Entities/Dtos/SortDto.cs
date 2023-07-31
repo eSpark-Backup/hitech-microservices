@@ -5,18 +5,14 @@ namespace Catalog.API.Entities.Dtos
 {
     public class SortDto : SortFilterDtoBase
     {
-        private PorductAttrib orderby;
-        /// <summary>
-        /// Default Value "CategoryName"
-        /// </summary>
-        [DefaultValue(PorductAttrib.CategoryName)]
-        public PorductAttrib Orderby
+        private string orderby;
+        public string Orderby
         {
             get => orderby;
             set
             {
                 if (value == null)
-                    orderby = PorductAttrib.CategoryName;
+                    orderby = "CategoryName";
                 orderby = value;
             }
         }

@@ -4,35 +4,35 @@ namespace Catalog.API.Entities.Dtos
 {
     public class SortFilterDtoBase
     {
-        protected string GetEnumaValue(PorductAttrib? porductAttrib)
+        protected string GetEnumaValue(string? porductAttrib)
         {
             switch (porductAttrib)
             {
-                case PorductAttrib.CategoryName:
+                case "categoryName":
                     return "CategoryName";
 
-                case PorductAttrib.SubCategoryName:
+                case "subCategoryName":
                     return "SubCategory.SubCategoryName";
 
-                case PorductAttrib.Manufacturer:
+                case "manufacturer":
                     return "SubCategory.Product.Manufacturer";
 
-                case PorductAttrib.ManufacturerPartNo:
+                case "manufacturerPartNo":
                     return "SubCategory.Product.ManufacturerPartNo";
 
-                case PorductAttrib.Name:
+                case "name":
                     return "SubCategory.Product.Name";
 
-                case PorductAttrib.Price:
+                case "price":
                     return "SubCategory.Product.Price";
 
-                case PorductAttrib.Packaging:
+                case "packaging":
                     return "SubCategory.Product.Packaging";
 
-                case PorductAttrib.Stock:
+                case "stock":
                     return "SubCategory.Product.Stock";
 
-                case PorductAttrib.Series:
+                case "series":
                     return "SubCategory.Product.Series";
 
             }
